@@ -4,7 +4,7 @@ import 'package:iot/onboarding.dart';
 import 'package:iot/service.dart';
 import 'package:flutter/material.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
-
+import 'pushNotification.dart';
 
 class RealTimeDataPage extends StatefulWidget {
   @override
@@ -21,17 +21,20 @@ class _RealTimeDataPageState extends State<RealTimeDataPage> {
     super.initState();
     _subscribeToTemperatureStream();
     _subscribeToHumidityStream();
+    PushNotification.initialize();
   }
 
   void _subscribeToTemperatureStream() {
     _firebaseService.getTemperatureStream().listen((event) {
       setState(() {
+        double temperature = double.parse(event.snapshot.value.toString());
         temperatureDataList.add(
           TemperatureData(
             DateTime.now(),
-            double.parse(event.snapshot.value.toString()),
+            temperature,
           ),
         );
+        PushNotification.checkTemperature(temperature);
       });
     });
   }
@@ -39,20 +42,17 @@ class _RealTimeDataPageState extends State<RealTimeDataPage> {
   void _subscribeToHumidityStream() {
     _firebaseService.getHumidityStream().listen((event) {
       setState(() {
+        double humidity = double.parse(event.snapshot.value.toString());
         humidityDataList.add(
           HumidityData(
             DateTime.now(),
-            double.parse(event.snapshot.value.toString()),
+            humidity,
           ),
         );
+        PushNotification.checkHumidity(humidity);
       });
     });
   }
-
-  
-
-
-
 
   List<charts.Series<TemperatureData, DateTime>> _createTemperatureSeriesData() {
     return [
@@ -81,15 +81,11 @@ class _RealTimeDataPageState extends State<RealTimeDataPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-     // appBar: AppBar(
-      //   title: Text('Temperature & Humidity Tracking'),
-      // ),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-
               Text(
                 'Temperature',
                 style: TextStyle(
