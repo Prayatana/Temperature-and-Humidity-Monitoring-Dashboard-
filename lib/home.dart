@@ -3,7 +3,10 @@ import 'dart:developer';
 import 'package:iot/onboarding.dart';
 import 'package:iot/service.dart';
 import 'package:flutter/material.dart';
-import 'package:charts_flutter/flutter.dart' as charts;
+// import 'package:charts_flutter/flutter.dart' as charts;
+// import 'package:syncfusion_flutter_charts/charts.dart' as charts;
+import 'package:syncfusion_flutter_charts/charts.dart';
+
 import 'pushNotification.dart';
 
 class RealTimeDataPage extends StatefulWidget {
@@ -54,26 +57,71 @@ class _RealTimeDataPageState extends State<RealTimeDataPage> {
     });
   }
 
-  List<charts.Series<TemperatureData, DateTime>> _createTemperatureSeriesData() {
-    return [
-      charts.Series<TemperatureData, DateTime>(
-        id: 'Temperature',
-        colorFn: (_, __) => charts.MaterialPalette.red.shadeDefault,
-        domainFn: (TemperatureData data, _) => data.time,
-        measureFn: (TemperatureData data, _) => data.temperature,
-        data: temperatureDataList,
+  // List<charts.Series<TemperatureData, DateTime>> _createTemperatureSeriesData() {
+  //   return [
+  //     charts.Series<TemperatureData, DateTime>(
+  //       id: 'Temperature',
+  //       colorFn: (_, __) => charts.MaterialPalette.red.shadeDefault,
+  //       domainFn: (TemperatureData data, _) => data.time,
+  //       measureFn: (TemperatureData data, _) => data.temperature,
+  //       data: temperatureDataList,
+  //     ),
+  //   ];
+  // }
+
+  // List<charts.Series<HumidityData, DateTime>> _createHumiditySeriesData() {
+  //   return [
+  //     charts.Series<HumidityData, DateTime>(
+  //       id: 'Humidity',
+  //       colorFn: (_, __) => charts.MaterialPalette.blue.shadeDefault,
+  //       domainFn: (HumidityData data, _) => data.time,
+  //       measureFn: (HumidityData data, _) => data.humidity,
+  //       data: humidityDataList,
+  //     ),
+  //   ];
+  // }
+
+  // List<charts.Series<TemperatureData, DateTime>>
+  //     _createTemperatureSeriesData() {
+  //   return <charts.Series<TemperatureData, DateTime>>[
+  //     charts.Series<TemperatureData, DateTime>(
+  //       id: 'Temperature',
+  //       color: charts.MaterialPalette.red.shadeDefault,
+  //       domainFn: (TemperatureData data, _) => data.time,
+  //       measureFn: (TemperatureData data, _) => data.temperature,
+  //       data: temperatureDataList,
+  //     ),
+  //   ];
+  // }
+
+  // List<charts.Series<HumidityData, DateTime>> _createHumiditySeriesData() {
+  //   return <charts.Series<HumidityData, DateTime>>[
+  //     charts.Series<HumidityData, DateTime>(
+  //       id: 'Humidity',
+  //       color: charts.MaterialPalette.blue.shadeDefault,
+  //       domainFn: (HumidityData data, _) => data.time,
+  //       measureFn: (HumidityData data, _) => data.humidity,
+  //       data: humidityDataList,
+  //     ),
+  //   ];
+  // }
+
+  List<SplineSeries<TemperatureData, DateTime>> _createTemperatureSeriesData() {
+    return <SplineSeries<TemperatureData, DateTime>>[
+      SplineSeries<TemperatureData, DateTime>(
+        dataSource: temperatureDataList,
+        xValueMapper: (TemperatureData data, _) => data.time,
+        yValueMapper: (TemperatureData data, _) => data.temperature,
       ),
     ];
   }
 
-  List<charts.Series<HumidityData, DateTime>> _createHumiditySeriesData() {
-    return [
-      charts.Series<HumidityData, DateTime>(
-        id: 'Humidity',
-        colorFn: (_, __) => charts.MaterialPalette.blue.shadeDefault,
-        domainFn: (HumidityData data, _) => data.time,
-        measureFn: (HumidityData data, _) => data.humidity,
-        data: humidityDataList,
+  List<SplineSeries<HumidityData, DateTime>> _createHumiditySeriesData() {
+    return <SplineSeries<HumidityData, DateTime>>[
+      SplineSeries<HumidityData, DateTime>(
+        dataSource: humidityDataList,
+        xValueMapper: (HumidityData data, _) => data.time,
+        yValueMapper: (HumidityData data, _) => data.humidity,
       ),
     ];
   }
@@ -96,10 +144,10 @@ class _RealTimeDataPageState extends State<RealTimeDataPage> {
               SizedBox(height: 20),
               Container(
                 height: 275,
-                child: charts.TimeSeriesChart(
-                  _createTemperatureSeriesData(),
-                  animate: true,
-                  dateTimeFactory: const charts.LocalDateTimeFactory(),
+                child: SfCartesianChart(
+                  series: _createTemperatureSeriesData(),
+                  primaryXAxis: DateTimeAxis(),
+                  primaryYAxis: NumericAxis(),
                 ),
               ),
               SizedBox(height: 20),
@@ -113,10 +161,10 @@ class _RealTimeDataPageState extends State<RealTimeDataPage> {
               const SizedBox(height: 20),
               SizedBox(
                 height: 275,
-                child: charts.TimeSeriesChart(
-                  _createHumiditySeriesData(),
-                  animate: true,
-                  dateTimeFactory: const charts.LocalDateTimeFactory(),
+                child: SfCartesianChart(
+                  series: _createHumiditySeriesData(),
+                  primaryXAxis: DateTimeAxis(),
+                  primaryYAxis: NumericAxis(),
                 ),
               ),
             ],

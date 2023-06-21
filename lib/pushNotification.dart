@@ -1,4 +1,4 @@
-// Awesome notification 
+// Awesome notification
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
 
@@ -16,7 +16,7 @@ class PushNotification {
           playSound: true,
           enableLights: true,
           enableVibration: true,
-          importance: NotificationImportance.High,
+          importance: NotificationImportance.Low,
         ),
         NotificationChannel(
           channelKey: 'high_temperature',
@@ -27,20 +27,20 @@ class PushNotification {
           playSound: true,
           enableLights: true,
           enableVibration: true,
-          importance: NotificationImportance.High,
+          importance: NotificationImportance.Low,
         ),
       ],
     );
   }
 
   static void checkHumidity(double humidity) {
-    if (humidity > 50) {
+    if (humidity > 70.0) {
       _showHighHumidityNotification();
     }
   }
 
   static void checkTemperature(double temperature) {
-    if (temperature > 50) {
+    if (temperature > 30.0) {
       _showHighTemperatureNotification();
     }
   }

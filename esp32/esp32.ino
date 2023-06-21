@@ -42,12 +42,15 @@ FirebaseConfig config;
 
 unsigned long sendDataPrevMillis = 0;
 bool signupOK = false;
+int Relay_PIN = 21;
 
 
 void setup()
 {
   Serial.begin(115200);
   pinMode(DHT_PIN, INPUT);
+  pinMode(Relay_PIN, OUTPUT);
+  digitalWrite(Relay_PIN, HIGH);
   delay(1000);
 
   WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
@@ -103,6 +106,13 @@ void loop()
   float temperature = event.temperature;
   dht.humidity().getEvent(&event);
   float humidity = event.relative_humidity;
+
+  if (humidity <= 70.00) {
+    digitalWrite(Relay_PIN, LOW);
+  }
+  else {
+  digitalWrite(Relay_PIN, HIGH);
+  }
 
   if(!isnan(temperature) && !isnan(humidity)){
     Serial.print("Temperature: ");
